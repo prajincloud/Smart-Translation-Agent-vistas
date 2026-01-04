@@ -60,59 +60,39 @@ button {
     </select>
 
     <button onclick="translateText()">Translate</button>
-    
+
     <div class="result" id="result">Translation will appear here</div>
 </div>
 
 <script>
 async function translateText() {
-  const inputText = document.getElementById("inputText").value;
-  const language = document.getElementById("language").value;
-  const status = document.getElementById("status");
-  const output = document.getElementById("result");
+    const text = document.getElementById("text").value.trim();
+    const language = document.getElementById("language").value;
 
-  if (inputText.trim() === "") {
-    status.innerHTML = "⚠ Please enter text";
-    output.value = "";
-    return;
-  }
+    if (!text) {
+        alert("Enter text");
+        return;
+    }
 
-  status.innerHTML = "⏳ Translating...";
+    try {
+        const response = await fetch("http://127.0.0.1:8003/translate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                text: text,
+                target_language: language
+            })
+        });
 
-  // Language codes for real translation
-  const langMap = {
-    Tamil: "ta",
-    Hindi: "hi",
-    French: "fr",
-    Spanish: "es",
-    German: "de"
-  };
+        const data = await response.json();
+        document.getElementById("result").innerText = data.translated_text;
 
-  try {
-    const response = await fetch("https://translate.argosopentech.com/translate",{
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        q: inputText,
-        source: "en",
-        target: langMap[language],
-        format: "text"
-      })
-    });
-
-    const data = await response.json();
-    output.innerHTML = data.translatedText;
-    status.innerHTML = "✅ Translation successful";
-  } catch (error) {
-    status.innerHTML = "❌ Backend not reachable";
-  }
+    } catch (error) {
+        document.getElementById("result").innerText = "❌ Backend not reachable";
+        console.error(error);
+    }
 }
-</script
+</script>
 
 </body>
-
 </html>
-
-
