@@ -49,7 +49,7 @@ button {
 <div class="container">
     <h2>🌍 Smart Translation Agent</h2>
 
-    <textarea id="text" placeholder="Enter text..."></textarea>
+    <textarea id="inputtext" placeholder="Enter text..."></textarea>
 
     <select id="language">
         <option value="ta">Tamil</option>
@@ -60,39 +60,58 @@ button {
     </select>
 
     <button onclick="translateText()">Translate</button>
-
+    
+    <p id="status"></p>
     <div class="result" id="result">Translation will appear here</div>
 </div>
 
 <script>
 async function translateText() {
-    const text = document.getElementById("text").value.trim();
-    const language = document.getElementById("language").value;
+  const inputText = document.getElementById("inputText").value;
+  const language = document.getElementById("language").value;
+  const status = document.getElementById("status");
+  const output = document.getElementById("result");
 
-    if (!text) {
-        alert("Enter text");
-        return;
-    }
+  if (inputText.trim() === "") {
+    status.innerHTML = "⚠ Please enter text";
+    output.value = "";
+    return;
+  }
 
-    try {
-        const response = await fetch("http://127.0.0.1:8003/translate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                text: text,
-                target_language: language
-            })
-        });
+  status.innerHTML = "⏳ Translating...";
 
-        const data = await response.json();
-        document.getElementById("result").innerText = data.translated_text;
+  // Language codes for real translation
+  const langMap = {
+    Tamil: "ta",
+    Hindi: "hi",
+    French: "fr",
+    Spanish: "es",
+    German: "de"
+  };
 
-    } catch (error) {
-        document.getElementById("result").innerText = "❌ Backend not reachable";
-        console.error(error);
-    }
+  try {
+    const response = await fetch("https://libretranslate.de/translate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        q: inputText,
+        source: "en",
+        target: langMap[language],
+        format: "text"
+      })
+    });
+
+    const data = await response.json();
+    output.innerHTML = data.translatedText;
+    status.innerHTML = "✅ Translation successful";
+  } catch (error) {
+    status.innerHTML = "❌ Backend not reachable";
+  }
 }
-</script>
+</script
 
 </body>
+
 </html>
