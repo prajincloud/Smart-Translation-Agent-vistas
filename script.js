@@ -7,34 +7,39 @@ async function translateText() {
   output.innerText = "";
   error.innerText = "";
 
-  if (text.trim() === "") {
+  if (!text.trim()) {
     error.innerText = "Please enter some text";
     return;
   }
 
-  try {
-    const response = await fetch("https://libretranslate.de/translate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        q: text,
-        source: "en",
-        target: target,
-        format: "text"
-      })
-    });
+  const servers = [
+    "https://libretranslate.de/translate",
+    "https://translate.argosopentech.com/translate"
+  ];
 
-    const data = await response.json();
+  for (let server of servers) {
+    try {
+      const response = await fetch(server, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          q: text,
+          source: "en",
+          target: target,
+          format: "text"
+        })
+      });
 
-    if (data.error) {
-      error.innerText = "Translation service error";
-    } else {
+      if (!response.ok) continue;
+
+      const data = await response.json();
       output.innerText = data.translatedText;
-    }
+      return;
 
-  } catch (err) {
-    error.innerText = "Server unavailable. Try again later.";
+    } catch (e) {
+      // try next server
+    }
   }
+
+  error.innerText = "Translation service temporarily unavailable. Try again later.";
 }
