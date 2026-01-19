@@ -75,7 +75,7 @@ async function translateText() {
     }
 
     try {
-        const response = await fetch("http://127.0.0.1:8003/translate", {
+        const response = await fetch("/translate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -88,8 +88,7 @@ async function translateText() {
         document.getElementById("result").innerText = data.translated_text;
 
     } catch (error) {
-        document.getElementById("result").innerText = "❌ Backend not reachable";
-        console.error(error);
+        document.getElementById("result").innerText = "❌ Server error";
     }
 }
 </script>
