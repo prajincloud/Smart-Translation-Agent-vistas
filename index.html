@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Translation Agent</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h2>🌍 Smart Translation Agent</h2>
+
+    <input
+      type="text"
+      id="inputText"
+      placeholder="Enter text in English"
+    />
+
+    <select id="language">
+      <option value="ta">Tamil</option>
+      <option value="hi">Hindi</option>
+      <option value="fr">French</option>
+      <option value="es">Spanish</option>
+      <option value="de">German</option>
+    </select>
+
+    <button onclick="translateText()">Translate</button>
+
+    <p id="output"></p>
+    <p id="error" class="error"></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
