@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Translation Agent</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="translator-box">
+    <h1>🌐 Smart Translation Agent</h1>
+    <p>AI-Powered Real-Time Language Translator</p>
+
+    <textarea id="inputText" placeholder="Enter text to translate..."></textarea>
+
+    <select id="language">
+        <option value="en">English</option>
+        <option value="ta">Tamil</option>
+        <option value="hi">Hindi</option>
+        <option value="te">Telugu</option>
+        <option value="ml">Malayalam</option>
+        <option value="kn">Kannada</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+        <option value="es">Spanish</option>
+        <option value="ja">Japanese</option>
+    </select>
+
+    <button onclick="translateText()">Translate</button>
+    <button class="clear" onclick="clearText()">Clear</button>
+
+    <textarea id="outputText" placeholder="Translated text will appear here..." readonly></textarea>
+</div>
+
+<script>
+function translateText() {
+    const text = document.getElementById("inputText").value;
+    const language = document.getElementById("language").value;
+
+    if (text.trim() === "") {
+        alert("Please enter some text");
+        return;
+    }
+
+    fetch("/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: text, language: language })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("outputText").value = data.translatedText;
+    })
+    .catch(() => {
+        alert("Translation failed. Check server.");
+    });
+}
+
+function clearText() {
+    document.getElementById("inputText").value = "";
+    document.getElementById("outputText").value = "";
+}
+</script>
+
+</body>
+</html>
